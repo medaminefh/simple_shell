@@ -90,13 +90,13 @@ int bfree(void **ptr)
 
 /**
  * interactive - two strings are equal
- * @info: is the str1
+ * @infos: is the str1
  *
  * Return: return int
  */
 
-int interactive(info_t *info)
+int interactive(infos_t *infos)
 {
-return (isatty(STDIN_FILENO) && info->readfd <= 2);
+return (isatty(STDIN_FILENO) && infos->readfd <= 2);
 
 }

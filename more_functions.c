@@ -97,19 +97,19 @@ int _erratoi(char *str)
 
 /**
  * print_err - two strings are equal
- * @info: is the str1
+ * @infos: is the str1
  * @estr: is the char
  *
  * Return: return int
  */
 
-void print_err(info_t *info, char *estr)
+void print_err(infos_t *infos, char *estr)
 {
-	_eputs(info->fname);
+	_eputs(infos->fname);
 	_eputs(": ");
-	print_d(info->line_count, STDERR_FILENO);
+	print_d(infos->line_count, STDERR_FILENO);
 	_eputs(": ");
-	_eputs(info->argv[0]);
+	_eputs(infos->argv[0]);
 	_eputs(": ");
 	_eputs(estr);
 }
