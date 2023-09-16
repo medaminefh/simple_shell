@@ -1,23 +1,65 @@
 #include "main.h"
 
-
 /**
- * print_d - This will convert ascii number into char
-(* a blank line
- * Description: by placing %c instead of %d, the number will be converted)?
-(* section header: Section description)*
- * @input: is a string
- * @a: is a cha
- * Return: just return 0 for ok
+ * _erratoi - converts a string to an integer
+ * @s: the string to be converted
+ * Return: 0 if no numbers in string, converted number otherwise
+ *       -1 on error
  */
-int print_d(int input, int a)
+int _erratoi(char *s)
 {
 	int i = 0;
-	int count = 0;
-	int (*__putchar)(char) = _putchar;
-	unsigned int _abs_, current;
+	long int res = 0;
 
-	if (a == STDERR_FILENO)
+	if (*s == '+')
+		s++;
+	for (i = 0;  s[i] != '\0'; i++)
+	{
+		if (s[i] >= '0' && s[i] <= '9')
+		{
+			res *= 10;
+			res += (s[i] - '0');
+			if (res > INT_MAX)
+				return (-1);
+		}
+		else
+			return (-1);
+	}
+	return (res);
+}
+
+/**
+ * print_error - prints an error message
+ * @infos: the parameter & return info struct
+ * @estr: string containing specified error type
+ * Return: 0 if no numbers in string, converted number otherwise
+ *        -1 on error
+ */
+void print_error(infos_t *infos, char *estr)
+{
+	_eputs(infos->fname);
+	_eputs(": ");
+	print_d(infos->line_count, STDERR_FILENO);
+	_eputs(": ");
+	_eputs(infos->argv[0]);
+	_eputs(": ");
+	_eputs(estr);
+}
+
+/**
+ * print_d - function prints a decimal (integer) number (base 10)
+ * @input: the input
+ * @fd: the filedescriptor to write to
+ *
+ * Return: number of characters printed
+ */
+int print_d(int input, int fd)
+{
+	int (*__putchar)(char) = _putchar;
+	int i, count = 0;
+	int _abs_, current;
+
+	if (fd == STDERR_FILENO)
 		__putchar = _eputchar;
 	if (input < 0)
 	{
@@ -26,11 +68,9 @@ int print_d(int input, int a)
 		count++;
 	}
 	else
-	{
 		_abs_ = input;
-	}
 	current = _abs_;
-	for (i = 1000000; i > 1; i /= 10)
+	for (i = 10000000; i > 1; i /= 10)
 	{
 		if (_abs_ / i)
 		{
@@ -41,91 +81,42 @@ int print_d(int input, int a)
 	}
 	__putchar('0' + current);
 	count++;
+
 	return (count);
 }
 
 /**
- *_eputs - prints an input string
- * @str: the string to be printed
+ * convert_number - converter function, a clone of itoa
+ * @num: number
+ * @base: base
+ * @flags: argument flags
  *
- * Return: Nothing
+ * Return: string
  */
-void _eputs(char *str)
+char *convert_number(long int num, int base, int flags)
 {
-	int i = 0;
+	static char *array;
+	static char buffer[50];
+	char sign = 0;
+	char *ptr;
+	long n = num;
 
-	if (!str)
-		return;
-	while (str[i] != '\0')
+	if (!(flags & CONVERT_UNSIGNED) && num < 0)
 	{
-		_eputchar(str[i]);
-		i++;
+		n = -num;
+		sign = '-';
+
 	}
-}
+	array = flags & CONVERT_LOWERCASE ? "0123456789abcdef" : "0123456789ABCDEF";
+	ptr = &buffer[49];
+	*ptr = '\0';
 
-/**
- * _eputchar - wr to stderr
- * @s: The characer t
- *
- * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
- */
-int _eputchar(char s)
-{
-	int i = 0;
-	char buffer[WRITE_BUFFER_SIZE];
+	do	{
+		*--ptr = array[n % base];
+		n /= base;
+	} while (n != 0);
 
-	if (s == BUFFER_FLUSH || i >= WRITE_BUFFER_SIZE)
-	{
-		write(2, buffer, i);
-		i = 0;
-	}
-	if (s != BUFFER_FLUSH)
-		buffer[i++] = s;
-	return (1);
-}
-
-/**
- * _putfd - ven fd
- * @s: The  to print
- * @fd: The filedescriptor to write to
- *
- * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
- */
-int _putfd(char s, int fd)
-{
-	int i = 0;
-	char buffer[WRITE_BUFFER_SIZE];
-
-	if (s == BUFFER_FLUSH || i >= WRITE_BUFFER_SIZE)
-	{
-		write(fd, buffer, i);
-		i = 0;
-	}
-	if (s != BUFFER_FLUSH)
-		buffer[i++] = s;
-	return (1);
-}
-
-/**
- *_putsfd - priing
- * @str: the sted
- * @fd: the filwrite to
- *
- * Return: the number of chars put
- */
-int _putsfd(char *str, int fd)
-{
-	int i = 0;
-
-	if (!str)
-	{
-		return (0);
-	}
-	while (*str)
-	{
-		i += _putfd(*str++, fd);
-	}
-	return (i);
+	if (sign)
+		*--ptr = sign;
+	return (ptr);
 }

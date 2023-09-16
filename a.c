@@ -1,157 +1,95 @@
 #include "main.h"
-/**
- * shell - main shell loop
- * @infos: the parameter & return info struct
- * @argv: the argument vector from main()
- *
- * Return: 0 on success, 1 on error, or error code
- */
-int shell(infos_t *infos, char **argv)
-{
-	ssize_t r = 0;
-	int builtin_ret = 0;
 
-	while (r != -1 && builtin_ret != -2)
+/**
+ * _my_exit - exits the shell
+ * @infos: Structure containing potential arguments. Used to maintain
+ *          constant function prototype.
+ *  Return: exits with a given exit status
+ *         (0) if infos.argv[0] != "exit"
+ */
+int _my_exit(infos_t *infos)
+{
+	int exitcheck;
+
+	if (infos->argv[1])
 	{
-		_clear_info(infos);
-		if (interactive(infos))
-			_puts("$ ");
-		_eputchar(BUFFER_FLUSH);
-		r = get_input(infos);
-		if (r != -1)
+		exitcheck = _erratoi(infos->argv[1]);
+		if (exitcheck == -1)
 		{
-			_set_info(infos, argv);
-			builtin_ret = find_builtin(infos);
-			if (builtin_ret == -1)
-				find_cmd(infos);
+			infos->status = 2;
+			print_error(infos, "Illegal number: ");
+			_eputs(infos->argv[1]);
+			_eputchar('\n');
+			return (1);
 		}
-		else if (interactive(infos))
+		infos->err_num = _erratoi(infos->argv[1]);
+		return (-2);
+	}
+	infos->err_num = -1;
+	return (-2);
+}
+
+/**
+ * _my_cd - changes the current directory of the process
+ * @infos: Structure containing potential arguments. Used to maintain
+ *          constant function prototype.
+ *  Return: Always 0
+ */
+int _my_cd(infos_t *infos)
+{
+	char *s, *dir, buffer[1024];
+	int chdir_ret;
+
+	s = getcwd(buffer, 1024);
+	if (!s)
+		_puts("TODO: >>get failure emsg here<<\n");
+	if (!infos->argv[1])
+	{
+		dir = _getenv(infos, "HOME=");
+		if (!dir)
+			chdir_ret = chdir((dir = _getenv(infos, "PWD=")) ? dir : "/");
+		else
+			chdir_ret = chdir(dir);
+	}
+	else if (_strcmp(infos->argv[1], "-") == 0)
+	{
+		if (!_getenv(infos, "OLDPWD="))
+		{
+			_puts(s);
 			_putchar('\n');
-		_free_info(infos, 0);
-	}
-	write_history(infos);
-	_free_info(infos, 1);
-	if (!interactive(infos) && infos->status)
-		exit(infos->status);
-	if (builtin_ret == -2)
-	{
-		if (infos->err_num == -1)
-			exit(infos->status);
-		exit(infos->err_num);
-	}
-	return (builtin_ret);
-}
-
-/**
- * find_builtin - finds a builtin command
- * @infos: the parameter & return info struct
- *
- * Return: -1 if builtin not found,
- *			0 if builtin executed successfully,
- *			1 if builtin found but not successful,
- *			-2 if builtin signals exit()
- */
-int find_builtin(infos_t *infos)
-{
-	int i, built_in_ret = -1;
-	builtin_table builtintbl[] = {
-		{"exit", _my_exit},
-		{"env", _my_env},
-		{"help", _my_help},
-		{"history", _my_history},
-		{"setenv", _my_setenv},
-		{"unsetenv", _my_unsetenv},
-		{"cd", _my_cd},
-		{"alias", _my_alias},
-		{NULL, NULL}
-	};
-
-	for (i = 0; builtintbl[i].type; i++)
-		if (_strcmp(infos->argv[0], builtintbl[i].type) == 0)
-		{
-			infos->line_count++;
-			built_in_ret = builtintbl[i].func(infos);
-			break;
+			return (1);
 		}
-	return (built_in_ret);
-}
-
-/**
- * find_cmd - finds a command in PATH
- * @infos: the parameter & return info struct
- *
- * Return: void
- */
-void find_cmd(infos_t *infos)
-{
-	char *path = NULL;
-	int a, b;
-
-	infos->path = infos->argv[0];
-	if (infos->line_count_flag == 1)
-	{
-		infos->line_count++;
-		infos->line_count_flag = 0;
+		_puts(_getenv(infos, "OLDPWD=")), _putchar('\n');
+		chdir_ret = chdir((dir = _getenv(infos, "OLDPWD=")) ? dir : "/");
 	}
-	for (a = 0, b = 0; infos->arg[a]; a++)
-		if (!is_delim(infos->arg[a], " \t\n"))
-			b++;
-	if (!b)
-		return;
-
-	path = find_path(infos, _getenv(infos, "PATH="), infos->argv[0]);
-	if (path)
+	else
+		chdir_ret = chdir(infos->argv[1]);
+	if (chdir_ret == -1)
 	{
-		infos->path = path;
-		fork_cmd(infos);
+		print_error(infos, "can't cd to ");
+		_eputs(infos->argv[1]), _eputchar('\n');
 	}
 	else
 	{
-		if ((interactive(infos) || _getenv(infos, "PATH=")
-			|| infos->argv[0][0] == '/') && is_cmd(infos, infos->argv[0]))
-			fork_cmd(infos);
-		else if (*(infos->arg) != '\n')
-		{
-			infos->status = 127;
-			print_error(infos, "not found\n");
-		}
+		_setenv(infos, "OLDPWD", _getenv(infos, "PWD="));
+		_setenv(infos, "PWD", getcwd(buffer, 1024));
 	}
+	return (0);
 }
 
 /**
- * fork_cmd - forks a an exec thread to run cmd
- * @infos: the parameter & return info struct
- *
- * Return: void
+ * _my_help - changes the current directory of the process
+ * @infos: Structure containing potential arguments. Used to maintain
+ *          constant function prototype.
+ *  Return: Always 0
  */
-void fork_cmd(infos_t *infos)
+int _my_help(infos_t *infos)
 {
-	pid_t child_pid;
+	char **arg_array;
 
-	child_pid = fork();
-	if (child_pid == -1)
-	{
-		perror("Error:");
-		return;
-	}
-	if (child_pid == 0)
-	{
-		if (execve(infos->path, infos->argv, get_environ(infos)) == -1)
-		{
-			_free_info(infos, 1);
-			if (errno == EACCES)
-				exit(126);
-			exit(1);
-		}
-	}
-	else
-	{
-		wait(&(infos->status));
-		if (WIFEXITED(infos->status))
-		{
-			infos->status = WEXITSTATUS(infos->status);
-			if (infos->status == 126)
-				print_error(infos, "Permission denied\n");
-		}
-	}
+	arg_array = infos->argv;
+	_puts("help call works. Function not yet implemented \n");
+	if (0)
+		_puts(*arg_array); /* temp att_unused workaround */
+	return (0);
 }

@@ -64,7 +64,8 @@ int read_history(infos_t *infos)
 	int i, last = 0, linecount = 0;
 	ssize_t fd, rdlen, fsize = 0;
 	struct stat st;
-	char *buffer = NULL, *filename = get_history_file(infos);
+	char *buffer = NULL;
+	char *filename = get_history_file(infos);
 
 	if (!filename)
 		return (0);
@@ -96,7 +97,7 @@ int read_history(infos_t *infos)
 		build_history_list(infos, buffer + last, linecount++);
 	free(buffer);
 	infos->histcount = linecount;
-	while (infos->histcount-- >= MAX_INT)
+	while (infos->histcount-- >= HISTORY_MAX)
 		delete_node_at_index(&(infos->history), 0);
 	renumber_history(infos);
 	return (infos->histcount);

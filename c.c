@@ -1,11 +1,10 @@
 #include "main.h"
 
-
 /**
- * _is_chain - test if current char in bufferfer is a chain delimeter
+ * _is_chain - test if current char in buffer is a chain delimeter
  * @infos: the parameter struct
- * @buffer: the char bufferfer
- * @p: address of current position in buffer
+ * @buffer: the char buffer
+ * @p: address of current position in buf
  *
  * Return: 1 if chain delimeter, 0 otherwise
  */
@@ -38,31 +37,31 @@ int _is_chain(infos_t *infos, char *buffer, size_t *p)
 
 /**
  * _check_chain - checks we should continue chaining based on last status
- * @info: the parameter struct
- * @buffer: the char bufferfer
- * @p: address of current position in buffer
- * @i: starting position in buffer
- * @len: length of buffer
+ * @infos: the parameter struct
+ * @buf: the char buffer
+ * @p: address of current position in buf
+ * @i: starting position in buf
+ * @len: length of buf
  *
  * Return: Void
  */
-void _check_chain(infos_t *info, char *buffer, size_t *p, size_t i, size_t len)
+void _check_chain(infos_t *infos, char *buf, size_t *p, size_t i, size_t len)
 {
 	size_t j = *p;
 
-	if (info->cmd_buffer_type == CMD_AND)
+	if (infos->cmd_buffer_type == CMD_AND)
 	{
-		if (info->status)
+		if (infos->status)
 		{
-			buffer[i] = 0;
+			buf[i] = 0;
 			j = len;
 		}
 	}
-	if (info->cmd_buffer_type == CMD_OR)
+	if (infos->cmd_buffer_type == CMD_OR)
 	{
-		if (!info->status)
+		if (!infos->status)
 		{
-			buffer[i] = 0;
+			buf[i] = 0;
 			j = len;
 		}
 	}
@@ -117,24 +116,24 @@ int _replace_vars(infos_t *infos)
 
 		if (!_strcmp(infos->argv[i], "$?"))
 		{
-			replace_string(&(infos->argv[i]),
+			_replace_string(&(infos->argv[i]),
 				_strdup(convert_number(infos->status, 10, 0)));
 			continue;
 		}
 		if (!_strcmp(infos->argv[i], "$$"))
 		{
-			replace_string(&(infos->argv[i]),
+			_replace_string(&(infos->argv[i]),
 				_strdup(convert_number(getpid(), 10, 0)));
 			continue;
 		}
 		node = node_starts_with(infos->env, &infos->argv[i][1], '=');
 		if (node)
 		{
-			replace_string(&(infos->argv[i]),
+			_replace_string(&(infos->argv[i]),
 				_strdup(_strchr(node->str, '=') + 1));
 			continue;
 		}
-		replace_string(&infos->argv[i], _strdup(""));
+		_replace_string(&infos->argv[i], _strdup(""));
 
 	}
 	return (0);

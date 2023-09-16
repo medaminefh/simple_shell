@@ -54,27 +54,6 @@ int _my_setenv(infos_t *infos)
 }
 
 /**
- * _my_unsetenv - Remove an environment variable
- * @infos: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- *  Return: Always 0
- */
-int _my_unsetenv(infos_t *infos)
-{
-	int i;
-
-	if (infos->argc == 1)
-	{
-		_eputs("Too few arguements.\n");
-		return (1);
-	}
-	for (i = 1; i <= infos->argc; i++)
-		_unsetenv(infos, infos->argv[i]);
-
-	return (0);
-}
-
-/**
  * populate_env_list - populates env linked list
  * @infos: Structure containing potential arguments. Used to maintain
  *          constant function prototype.

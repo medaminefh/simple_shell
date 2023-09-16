@@ -1,26 +1,26 @@
 #include "main.h"
 
 /**
- * main - return the length of a string
- * @argc: is the str
- * @argv: is the array of str
+ * main - entry point
+ * @argc: arg count
+ * @argv: arg vector
  *
- * Return: return int
+ * Return: 0 on success, 1 on error
  */
 int main(int argc, char **argv)
 {
-	infos_t infos[] = {INIT_INFO};
-	int a = 2;
+	infos_t infos[] = { INIT_INFORMATIONS };
+	int fd = 2;
 
 	asm ("mov %1, %0\n\t"
 		"add $3, %0"
-		: "=r" (a)
-		: "r" (a));
+		: "=r" (fd)
+		: "r" (fd));
 
 	if (argc == 2)
 	{
-		a = open(argv[1], O_RDONLY);
-		if (a == -1)
+		fd = open(argv[1], O_RDONLY);
+		if (fd == -1)
 		{
 			if (errno == EACCES)
 				exit(126);
@@ -35,10 +35,8 @@ int main(int argc, char **argv)
 			}
 			return (EXIT_FAILURE);
 		}
-
-		infos->readfd = a;
+		infos->readfd = fd;
 	}
-
 	populate_env_list(infos);
 	read_history(infos);
 	shell(infos, argv);

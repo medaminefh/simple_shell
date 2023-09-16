@@ -2,7 +2,7 @@
 
 /**
  * is_cmd - determines if a file is an executable command
- * @infos: the infos struct
+ * @infos: the info struct
  * @path: path to the file
  *
  * Return: 1 if true, 0 otherwise
@@ -28,11 +28,11 @@ int is_cmd(infos_t *infos, char *path)
  * @start: starting index
  * @stop: stopping index
  *
- * Return: pointer to new bufferfer
+ * Return: pointer to new buffer
  */
 char *dup_chars(char *pathstr, int start, int stop)
 {
-	static char buffer[WRITE_BUFFER_SIZE];
+	static char buffer[READ_BUFFER_SIZE];
 	int i = 0, k = 0;
 
 	for (k = 0, i = start; i < stop; i++)
@@ -44,7 +44,7 @@ char *dup_chars(char *pathstr, int start, int stop)
 
 /**
  * find_path - finds this cmd in the PATH string
- * @infos: the infos struct
+ * @infos: the info struct
  * @pathstr: the PATH string
  * @cmd: the cmd to find
  *
@@ -52,7 +52,7 @@ char *dup_chars(char *pathstr, int start, int stop)
  */
 char *find_path(infos_t *infos, char *pathstr, char *cmd)
 {
-	int i = 0, curr_position = 0;
+	int i = 0, curr_pos = 0;
 	char *path;
 
 	if (!pathstr)
@@ -66,7 +66,7 @@ char *find_path(infos_t *infos, char *pathstr, char *cmd)
 	{
 		if (!pathstr[i] || pathstr[i] == ':')
 		{
-			path = dup_chars(pathstr, curr_position, i);
+			path = dup_chars(pathstr, curr_pos, i);
 			if (!*path)
 				_strcat(path, cmd);
 			else
@@ -78,7 +78,7 @@ char *find_path(infos_t *infos, char *pathstr, char *cmd)
 				return (path);
 			if (!pathstr[i])
 				break;
-			curr_position = i;
+			curr_pos = i;
 		}
 		i++;
 	}

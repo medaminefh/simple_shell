@@ -31,7 +31,9 @@ int _unsetenv(infos_t *infos, char *var)
 	char *p;
 
 	if (!node || !var)
+	{
 		return (0);
+	}
 
 	while (node)
 	{

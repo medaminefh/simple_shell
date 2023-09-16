@@ -1,10 +1,10 @@
 #include "main.h"
 
 /**
- * _clear_infos - initializes infos_t struct
+ * _clear_info - initializes info_t struct
  * @infos: struct address
  */
-void _clear_infos(infos_t *infos)
+void _clear_info(infos_t *infos)
 {
 	infos->arg = NULL;
 	infos->argv = NULL;
@@ -13,11 +13,11 @@ void _clear_infos(infos_t *infos)
 }
 
 /**
- * _set_infos - initializes infos_t struct
+ * _set_info - initializes info_t struct
  * @infos: struct address
  * @av: argument vector
  */
-void _set_infos(infos_t *infos, char **av)
+void _set_info(infos_t *infos, char **av)
 {
 	int i = 0;
 
@@ -45,11 +45,11 @@ void _set_infos(infos_t *infos, char **av)
 }
 
 /**
- * _free_infos - frees infos_t struct fields
+ * _free_info - frees info_t struct fields
  * @infos: struct address
  * @all: true if freeing all fields
  */
-void _free_infos(infos_t *infos, int all)
+void _free_info(infos_t *infos, int all)
 {
 	ffree(infos->argv);
 	infos->argv = NULL;

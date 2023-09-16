@@ -1,115 +1,76 @@
 #include "main.h"
 
+/**
+ * interactive - returns true if shell is interactive mode
+ * @infos: struct address
+ *
+ * Return: 1 if interactive mode, 0 otherwise
+ */
+int interactive(infos_t *infos)
+{
+	return (isatty(STDIN_FILENO) && infos->readfd <= 2);
+}
 
 /**
- * is_delim - This will convert ascii number into char
-(* a blank line
- * Description: by placing %c instead of %d, the number will be converted)?
-(* section header: Section description)*
- * @c: is a string
- * @delim: is a cha
- * Return: just return 0 for ok
+ * is_delim - checks if character is a delimeter
+ * @c: the char to check
+ * @del: the delimeter string
+ * Return: 1 if true, 0 if false
  */
-int is_delim(char c, char *delim)
+int is_delim(char c, char *del)
 {
-	while (*delim)
-		if (*delim++ == c)
+	while (*del)
+		if (*del++ == c)
 			return (1);
 	return (0);
-
 }
 
 /**
- ** _isalpha - free an array of strings
- * @c: is an array of str
- *
- * Return: return int
+ *_isalpha - checks for alphabetic character
+ *@c: The character to input
+ *Return: 1 if c is alphabetic, 0 otherwise
  */
+
 int _isalpha(int c)
 {
-if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122))
-{
-return (1);
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+	{
+		return (1);
+	}
+	else
+		return (0);
 }
-return (0);
-}
-
 
 /**
- * _atoi - return if two strings are equal
- * @str: is the str
- *
- * Return: return int
+ *_atoi - converts a string to an integer
+ *@s: the string to be converted
+ *Return: 0 if no numbers in string, converted number otherwise
  */
-int _atoi(char *str)
+
+int _atoi(char *s)
 {
-	int i, sign = 1, flag = 0, output;
+	int a, sign = 1, flag = 0, output;
 	unsigned int result = 0;
 
-	for (i = 0; str[i] != '\0' && flag != 2; i++)
+	for (a = 0;  s[a] != '\0' && flag != 2; a++)
 	{
-		if (str[i] == '-')
+		if (s[a] == '-')
 			sign *= -1;
-		if (str[i] >= '0' && str[i] <= '9')
+
+		if (s[a] >= '0' && s[a] <= '9')
 		{
 			flag = 1;
 			result *= 10;
-			result *= (str[i] - '0');
+			result += (s[a] - '0');
 		}
 		else if (flag == 1)
-			flag  = 2;
+			flag = 2;
 	}
+
 	if (sign == -1)
 		output = -result;
 	else
 		output = result;
+
 	return (output);
-}
-
-/**
- * _erratoi - two strings are equal
- * @str: is the str1
- *
- * Return: return int
- */
-
-int _erratoi(char *str)
-{
-	int i;
-	unsigned long int result = 0;
-
-	if (*str == '+')
-		str++;
-	for (i = 0; str[i] != '\0'; i++)
-	{
-		if (str[i] >= '0' && str[i] <= '9')
-		{
-			result *= 10;
-			result += (str[i] - '0');
-			if (result > MAX_INT)
-				return (-1);
-		}
-		else
-			return (-1);
-	}
-	return (result);
-}
-
-/**
- * print_err - two strings are equal
- * @infos: is the str1
- * @estr: is the char
- *
- * Return: return int
- */
-
-void print_err(infos_t *infos, char *estr)
-{
-	_eputs(infos->fname);
-	_eputs(": ");
-	print_d(infos->line_count, STDERR_FILENO);
-	_eputs(": ");
-	_eputs(infos->argv[0]);
-	_eputs(": ");
-	_eputs(estr);
 }

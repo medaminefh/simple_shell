@@ -1,79 +1,85 @@
 #include "main.h"
 
 /**
- * set_alias - sets alias to string
- * @infos: parameter struct
- * @str: the string alias
+ *_eputs - prints an input string
+ * @str: the string to be printed
  *
- * Return: Always 0 on success, 1 on error
+ * Return: Nothing
  */
-int set_alias(infos_t *infos, char *str)
+void _eputs(char *str)
 {
-	char *p;
+	int i = 0;
 
-	p = _strchr(str, '=');
-	if (!p)
-		return (1);
-	if (!*++p)
-		return (unset_alias(infos, str));
-
-	unset_alias(infos, str);
-	return (add_node_end(&(infos->alias), str, 0) == NULL);
+	if (!str)
+		return;
+	while (str[i] != '\0')
+	{
+		_eputchar(str[i]);
+		i++;
+	}
 }
 
 /**
- * print_alias - prints an alias string
- * @node: the alias node
+ * _eputchar - writes the character c to stderr
+ * @c: The character to print
  *
- * Return: Always 0 on success, 1 on error
+ * Return: On success 1.
+ * On error, -1 is returned, and errno is set appropriately.
  */
-int print_alias(list_t *node)
+int _eputchar(char c)
 {
-	char *p = NULL, *a = NULL;
+	static int i;
+	static char buffer[WRITE_BUFFER_SIZE];
 
-	if (node)
+	if (c == BUFFER_FLUSH || i >= WRITE_BUFFER_SIZE)
 	{
-		p = _strchr(node->str, '=');
-		for (a = node->str; a <= p; a++)
-			_putchar(*a);
-		_putchar('\'');
-		_puts(p + 1);
-		_puts("'\n");
-		return (0);
+		write(2, buffer, i);
+		i = 0;
 	}
+	if (c != BUFFER_FLUSH)
+		buffer[i++] = c;
 	return (1);
 }
 
 /**
- * _my_alias - mimics the alias builtin (man alias)
- * @infos: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- *  Return: Always 0
+ * _putfd - writes the character c to given fd
+ * @c: The character to print
+ * @fd: The filedescriptor to write to
+ *
+ * Return: On success 1.
+ * On error, -1 is returned, and errno is set appropriately.
  */
-int _my_alias(infos_t *infos)
+int _putfd(char c, int fd)
+{
+	static int i;
+	static char buffer[WRITE_BUFFER_SIZE];
+
+	if (c == BUFFER_FLUSH || i >= WRITE_BUFFER_SIZE)
+	{
+		write(fd, buffer, i);
+		i = 0;
+	}
+	if (c != BUFFER_FLUSH)
+		buffer[i++] = c;
+	return (1);
+}
+
+/**
+ *_putsfd - prints an input string
+ * @str: the string to be printed
+ * @fd: the filedescriptor to write to
+ *
+ * Return: the number of chars put
+ */
+int _putsfd(char *str, int fd)
 {
 	int i = 0;
-	char *p = NULL;
-	list_t *node = NULL;
 
-	if (infos->argc == 1)
-	{
-		node = infos->alias;
-		while (node)
-		{
-			print_alias(node);
-			node = node->next;
-		}
+	if (!str)
 		return (0);
-	}
-	for (i = 1; infos->argv[i]; i++)
+	while (*str)
 	{
-		p = _strchr(infos->argv[i], '=');
-		if (p)
-			set_alias(infos, infos->argv[i]);
-		else
-			print_alias(node_starts_with(infos->alias, infos->argv[i], '='));
+		i += _putfd(*str++, fd);
 	}
-
-	return (0);
+	return (i);
 }
