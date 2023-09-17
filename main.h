@@ -112,7 +112,7 @@ typedef struct builtin
 /* hsh.c */
 int shell(infos_t *, char **);
 int find_builtin(infos_t *);
-void find_cmd(infos_t *);
+void find_command(infos_t *);
 void fork_shell(infos_t *);
 
 /* path.c */
@@ -143,7 +143,7 @@ char *_getenv(infos_t *, const char *);
 int _my_env(infos_t *);
 int _my_setenviron(infos_t *);
 int _my_unsetenv(infos_t *);
-int populate_env_list(infos_t *);
+int populate_env(infos_t *);
 
 /* string_functions3.c */
 char *_strncpy(char *, char *, int);
@@ -198,11 +198,11 @@ int _unsetenv(infos_t *, char *);
 int _setenv(infos_t *, char *, char *);
 
 /* file_io_functions.c */
-char *get_history_file(infos_t *);
-int write_history(infos_t *);
-int read_history(infos_t *);
-int build_history_list(infos_t *, char *, int);
-int renumber_history(infos_t *);
+char *get_hist_file(infos_t *);
+int write_hist(infos_t *);
+int read_hist(infos_t *);
+int build_hist_list(infos_t *, char *, int);
+int renumber_hist(infos_t *);
 
 /* liststr.c module */
 list_t *add_node(list_t **, const char *, int);

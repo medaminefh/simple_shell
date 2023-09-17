@@ -56,12 +56,12 @@ int _my_setenviron(infos_t *infos)
 }
 
 /**
- * populate_env_list - populates env linked list
+ * populate_env - populates env linked list
  * @infos: Structure containing potential arguments. Used to maintain
  *          constant function prototype.
  * Return: Always 0
  */
-int populate_env_list(infos_t *infos)
+int populate_env(infos_t *infos)
 {
 	list_t *n = NULL;
 	size_t i;

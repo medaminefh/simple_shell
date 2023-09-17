@@ -13,49 +13,6 @@ int _my_hist(infos_t *infos)
 	return (0);
 }
 
-/**
- * unset_alias - sets alias to string
- * @infos: parameter struct
- * @str: the string alias
- *
- * Return: Always 0 on success, 1 on error
- */
-int unset_alias(infos_t *infos, char *str)
-{
-	char *p, c;
-	int ret;
-
-	p = _strchr(str, '=');
-	if (!p)
-		return (1);
-	c = *p;
-	*p = 0;
-	ret = delete_node(&(infos->alias),
-		get_node_index(infos->alias, node_starts_with(infos->alias, str, -1)));
-	*p = c;
-	return (ret);
-}
-
-/**
- * set_alias - sets alias to string
- * @infos: parameter struct
- * @str: the string alias
- *
- * Return: Always 0 on success, 1 on error
- */
-int set_alias(infos_t *infos, char *str)
-{
-	char *p;
-
-	p = _strchr(str, '=');
-	if (!p)
-		return (1);
-	if (!*++p)
-		return (unset_alias(infos, str));
-
-	unset_alias(infos, str);
-	return (add_node_end(&(infos->alias), str, 0) == NULL);
-}
 
 /**
  * print_alias - prints an alias string

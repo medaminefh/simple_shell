@@ -24,13 +24,13 @@ int shell(infos_t *infos, char **av)
 			_set_info(infos, av);
 			builtin_ret = find_builtin(infos);
 			if (builtin_ret == -1)
-				find_cmd(infos);
+				find_command(infos);
 		}
 		else if (is_interactive(infos))
 			_putchar('\n');
 		_free_info(infos, 0);
 	}
-	write_history(infos);
+	write_hist(infos);
 	_free_info(infos, 1);
 	if (!is_interactive(infos) && infos->status)
 		exit(infos->status);
@@ -75,12 +75,12 @@ int find_builtin(infos_t *infos)
 }
 
 /**
- * find_cmd - finds a command in PATH
+ * find_command - finds a command in PATH
  * @infos: the parameter & return info struct
  *
  * Return: void
  */
-void find_cmd(infos_t *infos)
+void find_command(infos_t *infos)
 {
 	char *path = NULL;
 	int i, k;
