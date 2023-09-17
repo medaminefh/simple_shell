@@ -16,18 +16,18 @@ int _is_chain(infos_t *infos, char *buffer, size_t *p)
 	{
 		buffer[j] = 0;
 		j++;
-		infos->cmd_buffer_type = CMD_OR;
+		infos->cmd_buffer_type = SHELL_OR;
 	}
 	else if (buffer[j] == '&' && buffer[j + 1] == '&')
 	{
 		buffer[j] = 0;
 		j++;
-		infos->cmd_buffer_type = CMD_AND;
+		infos->cmd_buffer_type = SHELL_AND;
 	}
 	else if (buffer[j] == ';') /* found end of this command */
 	{
 		buffer[j] = 0; /* replace semicolon with null */
-		infos->cmd_buffer_type = CMD_CHAIN;
+		infos->cmd_buffer_type = SHELL_CHAIN;
 	}
 	else
 		return (0);
@@ -49,7 +49,7 @@ void _check_chain(infos_t *infos, char *buf, size_t *p, size_t i, size_t len)
 {
 	size_t j = *p;
 
-	if (infos->cmd_buffer_type == CMD_AND)
+	if (infos->cmd_buffer_type == SHELL_AND)
 	{
 		if (infos->status)
 		{
@@ -57,7 +57,7 @@ void _check_chain(infos_t *infos, char *buf, size_t *p, size_t i, size_t len)
 			j = len;
 		}
 	}
-	if (infos->cmd_buffer_type == CMD_OR)
+	if (infos->cmd_buffer_type == SHELL_OR)
 	{
 		if (!infos->status)
 		{

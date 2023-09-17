@@ -29,9 +29,9 @@ void _eputs(char *str)
 int _eputchar(char c)
 {
 	static int i;
-	static char buffer[WRITE_BUFFER_SIZE];
+	static char buffer[BUFFER_SIZE];
 
-	if (c == BUFFER_FLUSH || i >= WRITE_BUFFER_SIZE)
+	if (c == BUFFER_FLUSH || i >= BUFFER_SIZE)
 	{
 		write(2, buffer, i);
 		i = 0;
@@ -52,9 +52,9 @@ int _eputchar(char c)
 int _putfd(char c, int fd)
 {
 	static int i;
-	static char buffer[WRITE_BUFFER_SIZE];
+	static char buffer[BUFFER_SIZE];
 
-	if (c == BUFFER_FLUSH || i >= WRITE_BUFFER_SIZE)
+	if (c == BUFFER_FLUSH || i >= BUFFER_SIZE)
 	{
 		write(fd, buffer, i);
 		i = 0;

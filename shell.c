@@ -15,7 +15,7 @@ int shell(infos_t *infos, char **av)
 	while (a != -1 && builtin_ret != -2)
 	{
 		_clear_info(infos);
-		if (interactive(infos))
+		if (is_interactive(infos))
 			_puts("$ ");
 		_eputchar(BUFFER_FLUSH);
 		a = get_input(infos);
@@ -26,13 +26,13 @@ int shell(infos_t *infos, char **av)
 			if (builtin_ret == -1)
 				find_cmd(infos);
 		}
-		else if (interactive(infos))
+		else if (is_interactive(infos))
 			_putchar('\n');
 		_free_info(infos, 0);
 	}
 	write_history(infos);
 	_free_info(infos, 1);
-	if (!interactive(infos) && infos->status)
+	if (!is_interactive(infos) && infos->status)
 		exit(infos->status);
 	if (builtin_ret == -2)
 	{
@@ -58,8 +58,8 @@ int find_builtin(infos_t *infos)
 	builtin_table builtintbl[] = {
 		{"exit", _my_exit},
 		{"env", _my_env},
-		{"history", _my_history},
-		{"setenv", _my_setenv},
+		{"history", _my_hist},
+		{"setenv", _my_setenviron},
 		{"cd", _my_cd},
 		{NULL, NULL}
 	};
@@ -92,7 +92,7 @@ void find_cmd(infos_t *infos)
 		infos->line_count_flag = 0;
 	}
 	for (i = 0, k = 0; infos->arg[i]; i++)
-		if (!is_delim(infos->arg[i], " \t\n"))
+		if (!is_del(infos->arg[i], " \t\n"))
 			k++;
 	if (!k)
 		return;
@@ -101,28 +101,28 @@ void find_cmd(infos_t *infos)
 	if (path)
 	{
 		infos->path = path;
-		fork_cmd(infos);
+		fork_shell(infos);
 	}
 	else
 	{
-		if ((interactive(infos) || _getenv(infos, "PATH=")
-			|| infos->argv[0][0] == '/') && is_cmd(infos, infos->argv[0]))
-			fork_cmd(infos);
+		if ((is_interactive(infos) || _getenv(infos, "PATH=")
+			|| infos->argv[0][0] == '/') && is_command(infos, infos->argv[0]))
+			fork_shell(infos);
 		else if (*(infos->arg) != '\n')
 		{
 			infos->status = 127;
-			print_error(infos, "not found\n");
+			printf_error(infos, "not found\n");
 		}
 	}
 }
 
 /**
- * fork_cmd - forks a an exec thread to run cmd
+ * fork_shell - forks a an exec thread to run cmd
  * @infos: the parameter & return info struct
  *
  * Return: void
  */
-void fork_cmd(infos_t *infos)
+void fork_shell(infos_t *infos)
 {
 	pid_t child_pid;
 
@@ -134,7 +134,7 @@ void fork_cmd(infos_t *infos)
 	}
 	if (child_pid == 0)
 	{
-		if (execve(infos->path, infos->argv, get_environ(infos)) == -1)
+		if (execve(infos->path, infos->argv, get_env(infos)) == -1)
 		{
 			_free_info(infos, 1);
 			if (errno == EACCES)
@@ -149,7 +149,7 @@ void fork_cmd(infos_t *infos)
 		{
 			infos->status = WEXITSTATUS(infos->status);
 			if (infos->status == 126)
-				print_error(infos, "Permission denied\n");
+				printf_error(infos, "Permission denied\n");
 		}
 	}
 }

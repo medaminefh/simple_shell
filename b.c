@@ -1,13 +1,13 @@
 #include "main.h"
 
 /**
- * _my_history - displays the history list, one command by line, preceded
+ * _my_hist - displays the history list, one command by line, preceded
  *              with line numbers, starting at 0.
  * @infos: Structure containing potential arguments. Used to maintain
  *        constant function prototype.
  *  Return: Always 0
  */
-int _my_history(infos_t *infos)
+int _my_hist(infos_t *infos)
 {
 	print_list(infos->history);
 	return (0);
@@ -30,7 +30,7 @@ int unset_alias(infos_t *infos, char *str)
 		return (1);
 	c = *p;
 	*p = 0;
-	ret = delete_node_at_index(&(infos->alias),
+	ret = delete_node(&(infos->alias),
 		get_node_index(infos->alias, node_starts_with(infos->alias, str, -1)));
 	*p = c;
 	return (ret);

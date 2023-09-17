@@ -98,7 +98,7 @@ int read_history(infos_t *infos)
 	free(buffer);
 	infos->histcount = linecount;
 	while (infos->histcount-- >= HISTORY_MAX)
-		delete_node_at_index(&(infos->history), 0);
+		delete_node(&(infos->history), 0);
 	renumber_history(infos);
 	return (infos->histcount);
 }

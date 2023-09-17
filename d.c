@@ -1,6 +1,28 @@
 #include "main.h"
 
 /**
+ * _getenv - gets the value of an environ variable
+ * @infos: Structure containing potential arguments. Used to maintain
+ * @name: env var name
+ *
+ * Return: the value
+ */
+char *_getenv(infos_t *infos, const char *name)
+{
+	list_t *n = infos->env;
+	char *p;
+
+	while (n)
+	{
+		p = starts_with(n->str, name);
+		if (p && *p)
+			return (p);
+		n = n->next;
+	}
+	return (NULL);
+}
+
+/**
  * _my_env - prints the current environment
  * @infos: Structure containing potential arguments. Used to maintain
  *          constant function prototype.
@@ -12,36 +34,16 @@ int _my_env(infos_t *infos)
 	return (0);
 }
 
-/**
- * _getenv - gets the value of an environ variable
- * @infos: Structure containing potential arguments. Used to maintain
- * @name: env var name
- *
- * Return: the value
- */
-char *_getenv(infos_t *infos, const char *name)
-{
-	list_t *node = infos->env;
-	char *p;
 
-	while (node)
-	{
-		p = starts_with(node->str, name);
-		if (p && *p)
-			return (p);
-		node = node->next;
-	}
-	return (NULL);
-}
 
 /**
- * _my_setenv - Initialize a new environment variable,
+ * _my_setenviron - Initialize a new environment variable,
  *             or modify an existing one
  * @infos: Structure containing potential arguments. Used to maintain
  *        constant function prototype.
  *  Return: Always 0
  */
-int _my_setenv(infos_t *infos)
+int _my_setenviron(infos_t *infos)
 {
 	if (infos->argc != 3)
 	{
@@ -61,11 +63,11 @@ int _my_setenv(infos_t *infos)
  */
 int populate_env_list(infos_t *infos)
 {
-	list_t *node = NULL;
+	list_t *n = NULL;
 	size_t i;
 
 	for (i = 0; environ[i]; i++)
-		add_node_end(&node, environ[i], 0);
-	infos->env = node;
+		add_node_end(&n, environ[i], 0);
+	infos->env = n;
 	return (0);
 }

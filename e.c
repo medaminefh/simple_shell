@@ -1,16 +1,16 @@
 #include "main.h"
 
 /**
- * get_environ - returns the string array copy of our environ
+ * get_env - returns the string array copy of our environ
  * @infos: Structure containing potential arguments. Used to maintain
  *          constant function prototype.
  * Return: Always 0
  */
-char **get_environ(infos_t *infos)
+char **get_env(infos_t *infos)
 {
 	if (!infos->environ || infos->env_changed)
 	{
-		infos->environ = list_to_strings(infos->env);
+		infos->environ = list_to_str(infos->env);
 		infos->env_changed = 0;
 	}
 
@@ -40,7 +40,7 @@ int _unsetenv(infos_t *infos, char *var)
 		p = starts_with(node->str, var);
 		if (p && *p == '=')
 		{
-			infos->env_changed = delete_node_at_index(&(infos->env), i);
+			infos->env_changed = delete_node(&(infos->env), i);
 			i = 0;
 			node = infos->env;
 			continue;

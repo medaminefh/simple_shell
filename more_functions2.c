@@ -1,12 +1,12 @@
 #include "main.h"
 
 /**
- * _erratoi - converts a string to an integer
+ * _errtoi - converts a string to an integer
  * @s: the string to be converted
  * Return: 0 if no numbers in string, converted number otherwise
  *       -1 on error
  */
-int _erratoi(char *s)
+int _errtoi(char *s)
 {
 	int i = 0;
 	long int res = 0;
@@ -29,13 +29,13 @@ int _erratoi(char *s)
 }
 
 /**
- * print_error - prints an error message
+ * printf_error - prints an error message
  * @infos: the parameter & return info struct
  * @estr: string containing specified error type
  * Return: 0 if no numbers in string, converted number otherwise
  *        -1 on error
  */
-void print_error(infos_t *infos, char *estr)
+void printf_error(infos_t *infos, char *estr)
 {
 	_eputs(infos->fname);
 	_eputs(": ");
@@ -55,8 +55,8 @@ void print_error(infos_t *infos, char *estr)
  */
 int print_d(int input, int fd)
 {
+	int a, count = 0;
 	int (*__putchar)(char) = _putchar;
-	int i, count = 0;
 	int _abs_, current;
 
 	if (fd == STDERR_FILENO)
@@ -70,14 +70,14 @@ int print_d(int input, int fd)
 	else
 		_abs_ = input;
 	current = _abs_;
-	for (i = 10000000; i > 1; i /= 10)
+	for (a = INT_MAX; a > 1; a /= 10)
 	{
-		if (_abs_ / i)
+		if (_abs_ / a)
 		{
-			__putchar('0' + current / i);
+			__putchar('0' + current / a);
 			count++;
 		}
-		current %= i;
+		current %= a;
 	}
 	__putchar('0' + current);
 	count++;
@@ -101,13 +101,13 @@ char *convert_number(long int num, int base, int flags)
 	char *ptr;
 	long n = num;
 
-	if (!(flags & CONVERT_UNSIGNED) && num < 0)
+	if (!(flags & CONVERT_UNS) && num < 0)
 	{
 		n = -num;
 		sign = '-';
 
 	}
-	array = flags & CONVERT_LOWERCASE ? "0123456789abcdef" : "0123456789ABCDEF";
+	array = flags & CONVERT_LOWER ? "0123456789abcdef" : "0123456789ABCDEF";
 	ptr = &buffer[49];
 	*ptr = '\0';
 

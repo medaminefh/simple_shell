@@ -13,24 +13,24 @@
 #include <errno.h>
 
 /* for command chaining */
-#define CMD_NORM 0
-#define CMD_OR 1
-#define CMD_AND 2
-#define CMD_CHAIN 3
+#define SHELL_NORM 0
+#define SHELL_OR 1
+#define SHELL_AND 2
+#define SHELL_CHAIN 3
 
 /* for read/write buffers */
-#define READ_BUFFER_SIZE 1024
-#define WRITE_BUFFER_SIZE 1024
+#define BUFFER_SIZE 1024
 #define BUFFER_FLUSH -1
 
 /* for convert_number() */
-#define CONVERT_LOWERCASE	1
-#define CONVERT_UNSIGNED	2
+#define CONVERT_LOWER 1
+#define CONVERT_UNS 2
 
 #define HISTORY_FILE	"._history"
 #define HISTORY_MAX	4096
 
 extern char **environ;
+
 
 
 /**
@@ -45,6 +45,10 @@ typedef struct lista
 	char *str;
 	struct lista *next;
 } list_t;
+
+#define INIT_INFORMATIONS \
+{NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, \
+	0, 0, 0}
 
 /**
  *struct passinginfos - contains pseudo-arguements to pass into a function,
@@ -91,9 +95,7 @@ typedef struct passinginfos
 	int histcount;
 } infos_t;
 
-#define INIT_INFORMATIONS \
-{NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, \
-	0, 0, 0}
+
 
 /**
  *struct builtin - contains a builtin string and related function
@@ -111,10 +113,10 @@ typedef struct builtin
 int shell(infos_t *, char **);
 int find_builtin(infos_t *);
 void find_cmd(infos_t *);
-void fork_cmd(infos_t *);
+void fork_shell(infos_t *);
 
 /* path.c */
-int is_cmd(infos_t *, char *);
+int is_command(infos_t *, char *);
 char *dup_chars(char *, int, int);
 char *find_path(infos_t *, char *, char *);
 
@@ -139,7 +141,7 @@ int _putchar(char);
 /* env.c module */
 char *_getenv(infos_t *, const char *);
 int _my_env(infos_t *);
-int _my_setenv(infos_t *);
+int _my_setenviron(infos_t *);
 int _my_unsetenv(infos_t *);
 int populate_env_list(infos_t *);
 
@@ -153,7 +155,7 @@ char **strtow(char *, char *);
 
 /* memory_functions */
 char *_memset(char *, char, unsigned int);
-void ffree(char **);
+void free_strings(char **);
 void *_realloc(void *, unsigned int, unsigned int);
 
 /* memory_functions2.c */
@@ -166,14 +168,14 @@ void _free_info(infos_t *, int);
 
 
 /* more_functions.c */
-int interactive(infos_t *);
-int is_delim(char, char *);
+int is_interactive(infos_t *);
+int is_del(char, char *);
 int _isalpha(int);
 int _atoi(char *);
 
 /* more_functions2.c */
-int _erratoi(char *);
-void print_error(infos_t *, char *);
+int _errtoi(char *);
+void printf_error(infos_t *, char *);
 int print_d(int, int);
 char *convert_number(long int, int, int);
 void remove_comments(char *);
@@ -183,7 +185,7 @@ int _my_exit(infos_t *);
 int _my_cd(infos_t *);
 
 /* builtin_emulators2.c */
-int _my_history(infos_t *);
+int _my_hist(infos_t *);
 
 /* getline.c module */
 ssize_t get_input(infos_t *);
@@ -191,7 +193,7 @@ int _getline(infos_t *, char **, size_t *);
 void _sigintHandler(int);
 
 /* env2.c module */
-char **get_environ(infos_t *);
+char **get_env(infos_t *);
 int _unsetenv(infos_t *, char *);
 int _setenv(infos_t *, char *, char *);
 
@@ -206,12 +208,12 @@ int renumber_history(infos_t *);
 list_t *add_node(list_t **, const char *, int);
 list_t *add_node_end(list_t **, const char *, int);
 size_t print_list_str(const list_t *);
-int delete_node_at_index(list_t **, unsigned int);
+int delete_node(list_t **, unsigned int);
 void free_list(list_t **);
 
 /* liststr2.c module */
 size_t list_len(const list_t *);
-char **list_to_strings(list_t *);
+char **list_to_str(list_t *);
 size_t print_list(const list_t *);
 list_t *node_starts_with(list_t *, char *, char);
 ssize_t get_node_index(list_t *, list_t *);

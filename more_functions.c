@@ -1,23 +1,23 @@
 #include "main.h"
 
 /**
- * interactive - returns true if shell is interactive mode
+ * is_interactive - returns true if shell is interactive mode
  * @infos: struct address
  *
  * Return: 1 if interactive mode, 0 otherwise
  */
-int interactive(infos_t *infos)
+int is_interactive(infos_t *infos)
 {
 	return (isatty(STDIN_FILENO) && infos->readfd <= 2);
 }
 
 /**
- * is_delim - checks if character is a delimeter
+ * is_del - checks if character is a delimeter
  * @c: the char to check
  * @del: the delimeter string
  * Return: 1 if true, 0 if false
  */
-int is_delim(char c, char *del)
+int is_del(char c, char *del)
 {
 	while (*del)
 		if (*del++ == c)
@@ -49,8 +49,9 @@ int _isalpha(int c)
 
 int _atoi(char *s)
 {
-	int a, sign = 1, flag = 0, output;
-	unsigned int result = 0;
+	int a;
+	int sign = 1, flag = 0, output;
+	int result = 0;
 
 	for (a = 0;  s[a] != '\0' && flag != 2; a++)
 	{

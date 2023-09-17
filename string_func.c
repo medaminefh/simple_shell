@@ -1,24 +1,6 @@
 #include "main.h"
 
 /**
- * _strlen - returns the length of a string
- * @str: the string whose length to check
- *
- * Return: integer length of string
- */
-int _strlen(char *str)
-{
-	int a = 0;
-
-	if (!str)
-		return (0);
-
-	while (*str++)
-		a++;
-	return (a);
-}
-
-/**
  * _strcmp - performs lexicogarphic comparison of two strangs.
  * @s1: the first strang
  * @s2: the second strang
@@ -41,18 +23,37 @@ int _strcmp(char *s1, char *s2)
 }
 
 /**
+ * _strlen - returns the length of a string
+ * @str: the string whose length to check
+ *
+ * Return: integer length of string
+ */
+int _strlen(char *str)
+{
+	int a = 0;
+
+	if (!str)
+		return (0);
+
+	while (*str++)
+		a++;
+	return (a);
+}
+
+
+/**
  * starts_with - checks if needle starts with haystack
- * @haystack: string to search
+ * @a: string to search
  * @b: the substring to find
  *
  * Return: address of next char of haystack or NULL
  */
-char *starts_with(const char *haystack, const char *b)
+char *starts_with(const char *a, const char *b)
 {
 	while (*b)
-		if (*b++ != *haystack++)
+		if (*b++ != *a++)
 			return (NULL);
-	return ((char *)haystack);
+	return ((char *)a);
 }
 
 /**
