@@ -109,10 +109,10 @@ ssize_t read_buf(infos_t *infos, char *buf, size_t *i)
 }
 
 /**
- * _getline - gets the next line of input from STDIN
- * @infos: parameter struct
- * @ptr: address of pointer to buffer, preallocated or NULL
- * @length: size of preallocated ptr buffer if not NULL
+ * _getline - gets t from STDIN
+ * @infos: parameterct
+ * @ptr: address of reallocated or NULL
+ * @length: size of  buff if not NULL
  *
  * Return: s
  */
@@ -156,8 +156,8 @@ int _getline(infos_t *infos, char **ptr, size_t *length)
 }
 
 /**
- * _sigintHandler - blocks ctrl-C
- * @sig_num: the signal number
+ * _sigintHandler - ctrl-C
+ * @sig_num: the sig number
  *
  * Return: void
  */
